@@ -87,6 +87,7 @@ func (s *Service) startGRPC(errChan chan error) {
 		),
 	}
 	p := fmt.Sprintf(":%d", s.Config.Local.GRPCPort)
+	bugLog.Local().Infof("Starting orchestrator on %s", p)
 	lis, err := net.Listen("tcp", p)
 	if err != nil {
 		errChan <- err

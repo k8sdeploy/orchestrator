@@ -21,7 +21,7 @@ build-deploy-latest: build-push-latest deploy-latest
 
 .PHONY: build-images
 build-images: ## Build the images
-	nerdctl build --platform=amd64,arm64 --tag containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:${GIT_COMMIT} --build-arg VERSION=0.1 --build-arg BUILD=${GIT_COMMIT} --build-arg SERVICE_NAME=${SERVICE_NAME} -f ./k8s/Dockerfile .
+	nerdctl build --platform=amd64,arm64 --tag containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:${GIT_COMMIT} --build-arg VERSION=0.1 --build-arg BUILD=${GIT_COMMIT} --build-arg SERVICE_NAME=${SERVICE_NAME} -f ./k8s/Containerfile .
 	nerdctl tag containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:${GIT_COMMIT} containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:latest
 
 .PHONY: publish-images
