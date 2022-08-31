@@ -48,20 +48,26 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 	}
 	imageURL := fmt.Sprintf("%s@%s", "containers.chewedfeed.com/k8sdeploy/hooks-service", imageVersion)
 
-	b, err := json.Marshal(DeployBody{
+	dep := DeployBody{
 		Title: "deploy",
 		DeployMessage: DeployMessage{
 			Namespace: in.K8SDetails.ServiceNamespace,
 			Name:      in.K8SDetails.ServiceName,
 			ImageURL:  imageURL,
 		},
-	})
+	}
+	b, err := json.Marshal(dep)
 	if err != nil {
 		fmt.Printf("failed to marshal: %+v\n", err)
 		return &pb.DeploymentResponse{
 			Deployed: false,
 		}, nil
 	}
+
+	fmt.Printf("deploy message: %+v\n", dep)
+	return &pb.DeploymentResponse{
+		Deployed: true,
+	}, nil
 
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/message", s.Config.K8sDeploy.SocketAddress), bytes.NewBuffer(b))
 	req.Header.Set("X-Gotify-Key", channel.EmitToken)
