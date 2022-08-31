@@ -1,4 +1,4 @@
-SERVICE_NAME=hooks-service
+SERVICE_NAME=orchestrator
 GIT_COMMIT=`git rev-parse --short HEAD`
 -include .env
 export
