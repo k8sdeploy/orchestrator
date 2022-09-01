@@ -47,7 +47,7 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 	if in.K8SDetails.ImageHash != "" {
 		imageVersion = in.K8SDetails.ImageHash
 	}
-	imageURL := fmt.Sprintf("%s@%s", "containers.chewedfeed.com/k8sdeploy/hooks-service", imageVersion)
+	imageURL := fmt.Sprintf("%s:%s", "containers.chewedfeed.com/k8sdeploy/hooks-service", imageVersion)
 
 	deployMessage := DeployMessage{
 		Namespace: in.K8SDetails.ServiceNamespace,
