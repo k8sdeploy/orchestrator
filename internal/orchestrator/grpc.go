@@ -65,9 +65,6 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 	}
 
 	fmt.Printf("deploy message: %+v\n", dep)
-	return &pb.DeploymentResponse{
-		Deployed: true,
-	}, nil
 
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/message", s.Config.K8sDeploy.SocketAddress), bytes.NewBuffer(b))
 	req.Header.Set("X-Gotify-Key", channel.EmitToken)
