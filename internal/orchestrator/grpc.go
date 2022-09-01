@@ -46,6 +46,9 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 	}
 	if in.K8SDetails.ImageHash != "" {
 		imageVersion = in.K8SDetails.ImageHash
+		if len(imageVersion) >= 7 {
+			imageVersion = fmt.Sprint("sha-%s", imageVersion[:7])
+		}
 	}
 	imageURL := fmt.Sprintf("%s:%s", "containers.chewedfeed.com/k8sdeploy/hooks-service", imageVersion)
 
