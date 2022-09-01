@@ -36,8 +36,8 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 		ImageURL  string `json:"image_url"`
 	}
 	type DeployBody struct {
-		Title         string `json:"title"`
-		DeployMessage `json:"message"`
+		Title   string `json:"title"`
+		Message string `json:"message"`
 	}
 
 	imageVersion := "latest"
@@ -49,13 +49,22 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 	}
 	imageURL := fmt.Sprintf("%s@%s", "containers.chewedfeed.com/k8sdeploy/hooks-service", imageVersion)
 
+	deployMessage := DeployMessage{
+		Namespace: in.K8SDetails.ServiceNamespace,
+		Name:      in.K8SDetails.ServiceName,
+		ImageURL:  imageURL,
+	}
+	dm, err := json.Marshal(deployMessage)
+	if err != nil {
+		fmt.Printf("Marshal deployMessage err: %+v\n", err)
+		return &pb.DeploymentResponse{
+			Deployed: false,
+		}, nil
+	}
+
 	dep := DeployBody{
-		Title: "deploy",
-		DeployMessage: DeployMessage{
-			Namespace: in.K8SDetails.ServiceNamespace,
-			Name:      in.K8SDetails.ServiceName,
-			ImageURL:  imageURL,
-		},
+		Title:   "deploy",
+		Message: fmt.Sprintf("%s", dm),
 	}
 	b, err := json.Marshal(dep)
 	if err != nil {
