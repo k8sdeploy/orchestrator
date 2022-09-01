@@ -85,6 +85,7 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 	}
 
 	req.Header.Set("X-Gotify-Key", channel.EmitToken)
+	req.Header.Set("Content-Type", "application/json")
 	res, err := http.DefaultClient.Do(req)
 
 	defer func() {
