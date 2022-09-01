@@ -41,9 +41,6 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 	}
 
 	imageVersion := "latest"
-	if in.K8SDetails.ImageTag != "" {
-		imageVersion = in.K8SDetails.ImageTag
-	}
 	if in.K8SDetails.ImageHash != "" {
 		imageVersion = in.K8SDetails.ImageHash
 		if len(imageVersion) >= 7 {
@@ -51,6 +48,9 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 		} else {
 			imageVersion = fmt.Sprintf("sha-%s", imageVersion)
 		}
+	}
+	if in.K8SDetails.ImageTag != "" {
+		imageVersion = in.K8SDetails.ImageTag
 	}
 	imageURL := fmt.Sprintf("%s:%s", "containers.chewedfeed.com/k8sdeploy/hooks-service", imageVersion)
 
