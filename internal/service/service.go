@@ -2,6 +2,10 @@ package service
 
 import (
 	"fmt"
+	"net"
+	"net/http"
+	"time"
+
 	bugLog "github.com/bugfixes/go-bugfixes/logs"
 	bugMiddleware "github.com/bugfixes/go-bugfixes/middleware"
 	"github.com/go-chi/chi/v5"
@@ -17,8 +21,6 @@ import (
 	"github.com/keloran/go-probe"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"net"
-	"net/http"
 )
 
 type Service struct {
@@ -64,7 +66,15 @@ func (s *Service) startHTTP(errChan chan error) {
 		r.Post("/agent", orchestrator.NewOrchestrator(s.Config).HandleNewAgent)
 	})
 
-	if err := http.ListenAndServe(p, r); err != nil {
+	srv := &http.Server{
+		Addr:              p,
+		Handler:           r,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      10 * time.Second,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
 		errChan <- err
 	}
 }
@@ -72,10 +82,7 @@ func (s *Service) startHTTP(errChan chan error) {
 func (s *Service) startGRPC(errChan chan error) {
 	kOpts := []kit.Option{
 		kit.WithDecider(func(methodFullName string, err error) bool {
-			if err != nil {
-				return false
-			}
-			return true
+			return err == nil
 		}),
 	}
 	opts := []grpc.ServerOption{

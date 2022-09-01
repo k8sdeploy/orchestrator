@@ -3,6 +3,7 @@ package orchestrator
 import (
 	"context"
 	"fmt"
+
 	bugLog "github.com/bugfixes/go-bugfixes/logs"
 	"github.com/k8sdeploy/orchestrator-service/internal/config"
 	"github.com/mrz1836/go-sanitize"
@@ -49,7 +50,7 @@ type AgentData struct {
 	HooksSecret string `json:"hooks_secret" bson:"hooks_secret"`
 }
 
-func (m *Mongo) GetAgentDetails(companyId, key, secret string) (*AgentData, error) {
+func (m *Mongo) GetAgentDetails(companyID, key, secret string) (*AgentData, error) {
 	client, err := m.getConnection()
 	if err != nil {
 		return nil, err
@@ -65,7 +66,7 @@ func (m *Mongo) GetAgentDetails(companyId, key, secret string) (*AgentData, erro
 		Database(m.Config.Mongo.Orchestrator.Database).
 		Collection(m.Config.Orchestrator.Collection).
 		FindOne(m.CTX, map[string]string{
-			"company_id":   sanitize.AlphaNumeric(companyId, false),
+			"company_id":   sanitize.AlphaNumeric(companyID, false),
 			"hooks_key":    sanitize.AlphaNumeric(key, false),
 			"hooks_secret": sanitize.AlphaNumeric(secret, false)}).
 		Decode(&agentData)

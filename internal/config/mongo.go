@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+
 	"github.com/caarlos0/env/v6"
 )
 

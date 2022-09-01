@@ -5,9 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/k8sdeploy/orchestrator-service/internal/config"
 	pb "github.com/k8sdeploy/protos/generated/orchestrator/v1"
-	"net/http"
 )
 
 type Server struct {
@@ -67,8 +68,22 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 	fmt.Printf("deploy message: %+v\nchannel: %+v\nb:%s\n", dep, channel, b)
 
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/message", s.Config.K8sDeploy.SocketAddress), bytes.NewBuffer(b))
+	if err != nil {
+		fmt.Printf("failed to create request: %+v\n", err)
+		return &pb.DeploymentResponse{
+			Deployed: false,
+		}, nil
+	}
+
 	req.Header.Set("X-Gotify-Key", channel.EmitToken)
 	res, err := http.DefaultClient.Do(req)
+
+	defer func() {
+		if err := res.Body.Close(); err != nil {
+			fmt.Printf("failed to close response body: %+v\n", err)
+		}
+	}()
+
 	if err != nil {
 		fmt.Printf("channel notify error: %+v\n", err)
 		return &pb.DeploymentResponse{

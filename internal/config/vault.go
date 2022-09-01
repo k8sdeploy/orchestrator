@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+
 	"github.com/caarlos0/env/v6"
 	vaultAPI "github.com/hashicorp/vault/api"
 )

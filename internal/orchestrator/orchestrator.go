@@ -3,8 +3,9 @@ package orchestrator
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/k8sdeploy/orchestrator-service/internal/config"
 	"net/http"
+
+	"github.com/k8sdeploy/orchestrator-service/internal/config"
 )
 
 type Orchestrator struct {
