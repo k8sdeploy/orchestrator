@@ -66,8 +66,8 @@ func (m *Mongo) GetAgentDetails(companyID, key, secret string) (*AgentData, erro
 		Collection(m.Config.Orchestrator.Collection).
 		FindOne(m.CTX, map[string]string{
 			"company_id":   companyID,
-			"hooks_key":    key,
-			"hooks_secret": secret,
+			"agent_key":    key,
+			"agent_secret": secret,
 		}).
 		Decode(&agentData)
 	if err != nil {
