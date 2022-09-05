@@ -59,6 +59,7 @@ func getAPIKeys(c *Config) error {
 	for _, kv := range kvs {
 		if kv.Key == "orchestrator" {
 			c.K8sDeploy.Key = kv.Value
+			c.K8sDeploy.KeyService.Key = kv.Value
 		}
 	}
 
