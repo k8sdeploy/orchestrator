@@ -6,7 +6,6 @@ import (
 
 	bugLog "github.com/bugfixes/go-bugfixes/logs"
 	"github.com/k8sdeploy/orchestrator-service/internal/config"
-	"github.com/mrz1836/go-sanitize"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -66,13 +65,41 @@ func (m *Mongo) GetAgentDetails(companyID, key, secret string) (*AgentData, erro
 		Database(m.Config.Mongo.Orchestrator.Database).
 		Collection(m.Config.Orchestrator.Collection).
 		FindOne(m.CTX, map[string]string{
-			"company_id":   sanitize.AlphaNumeric(companyID, false),
-			"hooks_key":    sanitize.AlphaNumeric(key, false),
-			"hooks_secret": sanitize.AlphaNumeric(secret, false)}).
+			"company_id":   companyID,
+			"hooks_key":    key,
+			"hooks_secret": secret,
+		}).
 		Decode(&agentData)
 	if err != nil {
 		return nil, err
 	}
 
 	return &agentData, nil
+}
+
+func (m *Mongo) UpdateAgentChannel(companyID, channelID, channelKey string) error {
+	client, err := m.getConnection()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := client.Disconnect(m.CTX); err != nil {
+			bugLog.Info(err)
+		}
+	}()
+
+	_, err = client.
+		Database(m.Config.Mongo.Orchestrator.Database).
+		Collection(m.Config.Orchestrator.Collection).
+		UpdateOne(m.CTX, map[string]string{
+			"company_id": companyID,
+		}, map[string]string{
+			"channel_id":  channelID,
+			"channel_key": channelKey,
+		})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -21,6 +21,16 @@ type ChannelDetails struct {
 	EmitToken string
 }
 
+type DeployMessage struct {
+	Namespace string `json:"namespace"`
+	Name      string `json:"name"`
+	ImageURL  string `json:"image_url"`
+}
+type DeployBody struct {
+	Title   string `json:"title"`
+	Message string `json:"message"`
+}
+
 func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.DeploymentResponse, error) {
 	channel, err := s.GetChannel(in.K8SDetails.HookDetails.Id, in.K8SDetails.HookDetails.Key, in.K8SDetails.HookDetails.Secret)
 	if err != nil {
@@ -28,16 +38,6 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 		return &pb.DeploymentResponse{
 			Deployed: false,
 		}, nil
-	}
-
-	type DeployMessage struct {
-		Namespace string `json:"namespace"`
-		Name      string `json:"name"`
-		ImageURL  string `json:"image_url"`
-	}
-	type DeployBody struct {
-		Title   string `json:"title"`
-		Message string `json:"message"`
 	}
 
 	imageVersion := "latest"
@@ -67,16 +67,26 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 		}, nil
 	}
 
-	dep := DeployBody{
+	if err := s.sendMessage(DeployBody{
 		Title:   "deploy",
-		Message: fmt.Sprintf("%s", dm),
-	}
-	b, err := json.Marshal(dep)
-	if err != nil {
-		fmt.Printf("failed to marshal: %+v\n", err)
+		Message: string(dm),
+	}, channel); err != nil {
+		fmt.Printf("sendMessage err: %+v\n", err)
 		return &pb.DeploymentResponse{
 			Deployed: false,
 		}, nil
+	}
+
+	return &pb.DeploymentResponse{
+		Deployed: true,
+	}, nil
+}
+
+func (s *Server) sendMessage(dep DeployBody, channel ChannelDetails) error {
+	b, err := json.Marshal(dep)
+	if err != nil {
+		fmt.Printf("failed to marshal: %+v\n", err)
+		return err
 	}
 
 	fmt.Printf("deploy message: %+v\nchannel: %+v\nb:%s\n", dep, channel, b)
@@ -84,9 +94,7 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/message", s.Config.K8sDeploy.SocketAddress), bytes.NewBuffer(b))
 	if err != nil {
 		fmt.Printf("failed to create request: %+v\n", err)
-		return &pb.DeploymentResponse{
-			Deployed: false,
-		}, nil
+		return err
 	}
 
 	req.Header.Set("X-Gotify-Key", channel.EmitToken)
@@ -101,20 +109,14 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 
 	if err != nil {
 		fmt.Printf("channel notify error: %+v\n", err)
-		return &pb.DeploymentResponse{
-			Deployed: false,
-		}, nil
+		return err
 	}
 	if res.StatusCode != http.StatusOK {
 		fmt.Printf("failed result: %+v\n", res)
-		return &pb.DeploymentResponse{
-			Deployed: false,
-		}, nil
+		return err
 	}
 
-	return &pb.DeploymentResponse{
-		Deployed: true,
-	}, nil
+	return nil
 }
 
 func (s *Server) GetChannel(id, key, secret string) (ChannelDetails, error) {
