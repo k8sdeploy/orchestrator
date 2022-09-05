@@ -58,7 +58,7 @@ func (o *Orchestrator) HandleNewAgent(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if !validKeys {
-			fmt.Printf("invalid agent keys: %+v\n", err)
+			fmt.Printf("invalid agent keys: %+v\n", ab)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
