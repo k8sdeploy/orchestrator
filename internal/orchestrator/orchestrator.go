@@ -45,6 +45,7 @@ func (o *Orchestrator) HandleNewAgent(w http.ResponseWriter, r *http.Request) {
 	var ab AgentRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&ab); err != nil {
+		fmt.Printf("failed to decode request body: %+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -52,10 +53,12 @@ func (o *Orchestrator) HandleNewAgent(w http.ResponseWriter, r *http.Request) {
 	if !o.Config.Development {
 		validKeys, err := o.validateAgentKeys(ab)
 		if err != nil {
+			fmt.Printf("failed to validate agent keys: %+v\n", err)
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		if !validKeys {
+			fmt.Printf("invalid agent keys: %+v\n", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
@@ -63,12 +66,14 @@ func (o *Orchestrator) HandleNewAgent(w http.ResponseWriter, r *http.Request) {
 
 	updateDetails, err := o.GetUpdateDetails(ab)
 	if err != nil {
+		fmt.Printf("failed to get update details: %+v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	eventDetails, err := o.GetEventDetails(ab, updateDetails)
 	if err != nil {
+		fmt.Printf("failed to get event details: %+v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -77,6 +82,7 @@ func (o *Orchestrator) HandleNewAgent(w http.ResponseWriter, r *http.Request) {
 		Update: updateDetails,
 		Event:  eventDetails,
 	}); err != nil {
+		fmt.Printf("failed to encode response: %+v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

@@ -94,6 +94,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: orchestrator-service
+                name: orchestrator
                 port:
                   number: 3000
