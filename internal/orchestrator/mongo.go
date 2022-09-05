@@ -3,6 +3,7 @@ package orchestrator
 import (
 	"context"
 	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson"
 
 	bugLog "github.com/bugfixes/go-bugfixes/logs"
@@ -93,8 +94,20 @@ func (m *Mongo) UpdateAgentChannel(companyID, channelID, channelKey string) erro
 		Database(m.Config.Mongo.Orchestrator.Database).
 		Collection(m.Config.Orchestrator.Collection).
 		UpdateOne(m.CTX,
-			bson.D{{"company_id", companyID}},
-			bson.D{{"$set", bson.D{{"channel_id", channelID}, {"channel_key", channelKey}}}},
+			bson.D{{
+				Key:   "company_id",
+				Value: companyID,
+			}},
+			bson.D{{
+				Key: "$set",
+				Value: bson.D{{
+					Key:   "channel_id",
+					Value: channelID,
+				}, {
+					Key:   "channel_key",
+					Value: channelKey,
+				}},
+			}},
 		)
 	if err != nil {
 		return err
