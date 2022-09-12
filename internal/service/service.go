@@ -64,6 +64,7 @@ func (s *Service) startHTTP(errChan chan error) {
 		}
 
 		r.Post("/agent", orchestrator.NewOrchestrator(s.Config).HandleNewAgent)
+		r.Post("/agent_account", orchestrator.NewOrchestrator(s.Config).HandleNewAgentAccount)
 	})
 
 	srv := &http.Server{

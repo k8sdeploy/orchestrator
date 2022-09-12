@@ -78,6 +78,11 @@ func (o *Orchestrator) HandleNewAgent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if updateDetails == (AgentChannelDetails{}) && eventDetails == (AgentChannelDetails{}) {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	if err := json.NewEncoder(w).Encode(AgentResponse{
 		Update: updateDetails,
 		Event:  eventDetails,
@@ -176,7 +181,7 @@ func (o *Orchestrator) GetUpdateDetails(request AgentRequest) (AgentChannelDetai
 		}
 	}
 
-	return o.createUpdateDetails(request)
+	return AgentChannelDetails{}, nil
 }
 
 func (o *Orchestrator) GetEventDetails(request AgentRequest, details AgentChannelDetails) (AgentChannelDetails, error) {
@@ -185,7 +190,7 @@ func (o *Orchestrator) GetEventDetails(request AgentRequest, details AgentChanne
 		return AgentChannelDetails{}, err
 	}
 	if agent.ChannelID == "" {
-		return o.createEventDetails(request, details)
+		return AgentChannelDetails{}, nil
 	}
 
 	return AgentChannelDetails{
@@ -228,6 +233,39 @@ func (o *Orchestrator) createUpdateDetails(request AgentRequest) (AgentChannelDe
 		Token:   cr.Token,
 		Channel: o.Config.K8sDeploy.UpdateChannelID,
 	}, nil
+}
+
+func (o *Orchestrator) HandleNewAgentAccount(w http.ResponseWriter, r *http.Request) {
+	var ab AgentRequest
+	if err := json.NewDecoder(r.Body).Decode(&ab); err != nil {
+		fmt.Printf("failed to decode request body: %+v\n", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if ab.CompanyID == "" || ab.Key == "" || ab.Secret == "" {
+		fmt.Printf("invalid request body: %+v\n", ab)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	ud, err := o.createUpdateDetails(ab)
+	if err != nil {
+		fmt.Printf("failed to create update details: %+v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	acd, err := o.createEventDetails(ab, AgentChannelDetails{
+		Token: ud.Token,
+	})
+	if err != nil {
+		fmt.Printf("failed to create event details: %+v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Printf("created event details: %+v\n", acd)
 }
 
 func (o *Orchestrator) createEventDetails(request AgentRequest, details AgentChannelDetails) (AgentChannelDetails, error) {
