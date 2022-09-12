@@ -24,7 +24,7 @@ jobs:
       - uses: golangci/golangci-lint-action@v2
         with:
           version: v1.48
-          args: --internal ./k8s/golangci.yml
+          args: --config ./k8s/golangci.yml
       - name: test
         run: go test -v -race -bench=./... -benchmem -timeout=120s -bench=./... ./...
   automerge:
