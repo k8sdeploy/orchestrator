@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/bugfixes/go-bugfixes v0.7.1
-	github.com/caarlos0/env/v6 v6.10.0
+	github.com/caarlos0/env/v6 v6.10.1
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/httplog v0.2.5
 	github.com/go-kit/log v0.2.1
@@ -55,7 +55,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.0 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
-	github.com/mrz1836/go-sanitize v1.1.5 // indirect
 	github.com/oklog/run v1.0.0 // indirect
 	github.com/pierrec/lz4 v2.5.2+incompatible // indirect
 	github.com/pkg/errors v0.9.1 // indirect
