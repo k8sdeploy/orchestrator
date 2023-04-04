@@ -6,7 +6,7 @@ require (
 	github.com/bugfixes/go-bugfixes v0.8.5
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/go-chi/chi/v5 v5.0.8
-	github.com/go-chi/httplog v0.2.5
+	github.com/go-chi/httplog v0.3.0
 	github.com/go-kit/log v0.2.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/hashicorp/vault/api v1.9.0
