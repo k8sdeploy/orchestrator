@@ -66,4 +66,3 @@ version-resolver:
 exclude-labels:
   - 'skip-changelog'
 
-change-template: '- [#$NUMBER](https://github.com/k8sdeploy/orchestrator/pull/$NUMBER) $TITLE (@$AUTHOR)'
