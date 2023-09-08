@@ -1,7 +1,8 @@
 package config
 
 import (
-	"errors"
+	"github.com/bugfixes/go-bugfixes/logs"
+	vault_helper "github.com/keloran/vault-helper"
 
 	"github.com/caarlos0/env/v6"
 )
@@ -41,58 +42,46 @@ func BuildK8sDeploy(c *Config) error {
 }
 
 func getAPIKeys(c *Config) error {
-	creds, err := c.getVaultSecrets("kv/data/k8sdeploy/api-keys")
-	if err != nil {
-		return err
+	vh := vault_helper.NewVault(c.Config.Vault.Address, c.Config.Vault.Token)
+	if err := vh.GetSecrets("kv/data/k8sdeploy/api-keys"); err != nil {
+		return logs.Errorf("get api-keys: %v", err)
 	}
-	if creds == nil {
-		return errors.New("no api keys found")
+	keyService, err := vh.GetSecret("key-service")
+	if err != nil {
+		return logs.Errorf("get key-service: %v", err)
+	}
+	orcKey, err := vh.GetSecret("orchestrator")
+	if err != nil {
+		return logs.Errorf("get orchestrator: %v", err)
 	}
 
-	kvs, err := ParseKVSecrets(creds)
-	if err != nil {
-		return err
-	}
-	if len(kvs) == 0 {
-		return errors.New("no api keys parsed")
-	}
-	for _, kv := range kvs {
-		if kv.Key == "orchestrator" {
-			c.K8sDeploy.Key = kv.Value
-			c.K8sDeploy.KeyService.Key = kv.Value
-		}
-	}
+	c.K8sDeploy.Key = orcKey
+	c.K8sDeploy.KeyService.Key = keyService
 
 	return nil
 }
 
 func getChannelKeys(c *Config) error {
-	creds, err := c.getVaultSecrets("kv/data/k8sdeploy/orchestrator/channel-keys")
-	if err != nil {
+	vh := vault_helper.NewVault(c.Config.Vault.Address, c.Config.Vault.Token)
+	if err := vh.GetSecrets("kv/data/k8sdeploy/orchestrator/channel-keys"); err != nil {
 		return err
 	}
-	if creds == nil {
-		return errors.New("no channel keys found")
+	updateKey, err := vh.GetSecret("update")
+	if err != nil {
+		return logs.Errorf("get key-service: %v", err)
+	}
+	createChannel, err := vh.GetSecret("createAccount")
+	if err != nil {
+		return logs.Errorf("get orchestrator: %v", err)
+	}
+	updateChannel, err := vh.GetSecret("updateChannelID")
+	if err != nil {
+		return logs.Errorf("get orchestrator: %v", err)
 	}
 
-	kvs, err := ParseKVSecrets(creds)
-	if err != nil {
-		return err
-	}
-	if len(kvs) == 0 {
-		return errors.New("no channel keys parsed")
-	}
-	for _, kv := range kvs {
-		if kv.Key == "update" {
-			c.K8sDeploy.UpdateChannelKey = kv.Value
-		}
-		if kv.Key == "createAccount" {
-			c.K8sDeploy.CreateAccount = kv.Value
-		}
-		if kv.Key == "updateChannelID" {
-			c.K8sDeploy.UpdateChannelID = kv.Value
-		}
-	}
+	c.K8sDeploy.UpdateChannelKey = updateKey
+	c.K8sDeploy.CreateAccount = createChannel
+	c.K8sDeploy.UpdateChannelID = updateChannel
 
 	return nil
 }

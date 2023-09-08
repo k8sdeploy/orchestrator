@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	bugLog "github.com/bugfixes/go-bugfixes/logs"
+	"github.com/bugfixes/go-bugfixes/logs"
 	"github.com/k8sdeploy/orchestrator-service/internal/config"
 	"github.com/k8sdeploy/orchestrator-service/internal/service"
 )
@@ -15,12 +15,12 @@ var (
 )
 
 func main() {
-	bugLog.Local().Info(fmt.Sprintf("Starting %s", ServiceName))
-	bugLog.Local().Info(fmt.Sprintf("Version: %s, Hash: %s", BuildVersion, BuildHash))
+	logs.Local().Info(fmt.Sprintf("Starting %s", ServiceName))
+	logs.Local().Info(fmt.Sprintf("Version: %s, Hash: %s", BuildVersion, BuildHash))
 
 	cfg, err := config.Build()
 	if err != nil {
-		_ = bugLog.Errorf("config: %v", err)
+		_ = logs.Errorf("config: %v", err)
 		return
 	}
 
@@ -29,7 +29,7 @@ func main() {
 	}
 
 	if err := s.Start(); err != nil {
-		_ = bugLog.Errorf("start service: %v", err)
+		_ = logs.Errorf("start service: %v", err)
 		return
 	}
 }

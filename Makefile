@@ -1,4 +1,5 @@
 SERVICE_NAME=orchestrator
+NAMESPACE=k8sdeploy
 GIT_COMMIT=`git rev-parse --short HEAD`
 -include .env
 export
@@ -13,33 +14,33 @@ setup: ## Get linting stuffs
 
 .PHONY: build-push-latest
 build-push-latest:
-	nerdctl build --platform=amd64,arm64 --tag containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:latest --build-arg VERSION=0.1 --build-arg BUILD=${GIT_COMMIT} --build-arg SERVICE_NAME=${SERVICE_NAME} -f ./k8s/Containerfile .
-	nerdctl push containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:latest --all-platforms
+	nerdctl build --platform=amd64,arm64 --tag containers.chewedfeed.com/${NAMESPACE}/${SERVICE_NAME}:latest --build-arg VERSION=0.1 --build-arg BUILD=${GIT_COMMIT} --build-arg SERVICE_NAME=${SERVICE_NAME} -f ./k8s/Containerfile .
+	nerdctl push containers.chewedfeed.com/${NAMESPACE}/${SERVICE_NAME}:latest --all-platforms
 
 .PHONY: build-deploy-latest
 build-deploy-latest: build-push-latest deploy-latest
 
 .PHONY: build-images
 build-images: ## Build the images
-	nerdctl build --platform=amd64,arm64 --tag containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:${GIT_COMMIT} --build-arg VERSION=0.1 --build-arg BUILD=${GIT_COMMIT} --build-arg SERVICE_NAME=${SERVICE_NAME} -f ./k8s/Containerfile .
-	nerdctl tag containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:${GIT_COMMIT} containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:latest
+	nerdctl build --platform=amd64,arm64 --tag containers.chewedfeed.com/${NAMESPACE}/${SERVICE_NAME}:${GIT_COMMIT} --build-arg VERSION=0.1 --build-arg BUILD=${GIT_COMMIT} --build-arg SERVICE_NAME=${SERVICE_NAME} -f ./k8s/Containerfile .
+	nerdctl tag containers.chewedfeed.com/${NAMESPACE}/${SERVICE_NAME}:${GIT_COMMIT} containers.chewedfeed.com/${NAMESPACE}/${SERVICE_NAME}:latest
 
 .PHONY: publish-images
 publish-images:
-	nerdctl push containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:${GIT_COMMIT} --all-platforms
-	nerdctl push containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:latest --all-platforms
+	nerdctl push containers.chewedfeed.com/${NAMESPACE}/${SERVICE_NAME}:${GIT_COMMIT} --all-platforms
+	nerdctl push containers.chewedfeed.com/${NAMESPACE}/${SERVICE_NAME}:latest --all-platforms
 
 .PHONY: build
 build: build-images
 
 .PHONY: deploy
 deploy:
-	kubectl set image deployment/${SERVICE_NAME} ${SERVICE_NAME}=containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:${GIT_COMMIT} --namespace=k8sdeploy
+	kubectl set image deployment/${SERVICE_NAME} ${SERVICE_NAME}=containers.chewedfeed.com/${NAMESPACE}/${SERVICE_NAME}:${GIT_COMMIT} --namespace=${NAMESPACE}
 
 .PHONY: deploy-latest
 deploy-latest:
-	kubectl set image deployment/${SERVICE_NAME} ${SERVICE_NAME}=containers.chewedfeed.com/k8sdeploy/${SERVICE_NAME}:latest --namespace=k8sdeploy
-	kubectl rollout restart deployment/${SERVICE_NAME} --namespace=k8sdeploy
+	kubectl set image deployment/${SERVICE_NAME} ${SERVICE_NAME}=containers.chewedfeed.com/${NAMESPACE}/${SERVICE_NAME}:latest --namespace=${NAMESPACE}
+	kubectl rollout restart deployment/${SERVICE_NAME} --namespace=${NAMESPACE}
 
 .PHONY: build-deploy
 build-deploy: build publish-images deploy
