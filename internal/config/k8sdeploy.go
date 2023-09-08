@@ -66,7 +66,7 @@ func getChannelKeys(c *Config) error {
 	if err := vh.GetSecrets("kv/data/k8sdeploy/orchestrator/channel-keys"); err != nil {
 		return err
 	}
-	updateChannel, err := vh.GetSecret("update")
+	updateKey, err := vh.GetSecret("update")
 	if err != nil {
 		return logs.Errorf("get key-service: %v", err)
 	}
@@ -74,12 +74,12 @@ func getChannelKeys(c *Config) error {
 	if err != nil {
 		return logs.Errorf("get orchestrator: %v", err)
 	}
-	updateChannel, err = vh.GetSecret("updateChannelID")
+	updateChannel, err := vh.GetSecret("updateChannelID")
 	if err != nil {
 		return logs.Errorf("get orchestrator: %v", err)
 	}
 
-	c.K8sDeploy.UpdateChannelKey = updateChannel
+	c.K8sDeploy.UpdateChannelKey = updateKey
 	c.K8sDeploy.CreateAccount = createChannel
 	c.K8sDeploy.UpdateChannelID = updateChannel
 
