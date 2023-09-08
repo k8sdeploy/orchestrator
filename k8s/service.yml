@@ -40,12 +40,14 @@ spec:
             - name: DEVELOPMENT
               value: "false"
             - name: SERVICE_NAME
-              value: orchestrator
+              value: permissions
             - name: VAULT_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: k8sdeploy-vault-token
                   key: token
+            - name: MONGO_VAULT_PATH
+              value: "kv/data/k8sdeploy/permissions/mongodb"
 
 ---
 apiVersion: v1

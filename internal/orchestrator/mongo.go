@@ -64,8 +64,8 @@ func (m *Mongo) GetAgentDetails(companyID, key, secret string) (*AgentData, erro
 
 	var agentData AgentData
 	err = client.
-		Database(m.Config.Mongo.Orchestrator.Database).
-		Collection(m.Config.Orchestrator.Collection).
+		Database(m.Config.Mongo.Database).
+		Collection(m.Config.Collections["agents"]).
 		FindOne(m.CTX, map[string]string{
 			"company_id":   companyID,
 			"agent_key":    key,
@@ -91,8 +91,8 @@ func (m *Mongo) UpdateAgentChannel(companyID, channelID, channelKey string) erro
 	}()
 
 	_, err = client.
-		Database(m.Config.Mongo.Orchestrator.Database).
-		Collection(m.Config.Orchestrator.Collection).
+		Database(m.Config.Mongo.Database).
+		Collection(m.Config.Collections["agents"]).
 		UpdateOne(m.CTX,
 			bson.D{{
 				Key:   "company_id",
