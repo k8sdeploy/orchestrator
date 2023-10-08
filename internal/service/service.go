@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	bugLog "github.com/bugfixes/go-bugfixes/logs"
+	"github.com/bugfixes/go-bugfixes/logs"
 	bugMiddleware "github.com/bugfixes/go-bugfixes/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -44,7 +44,7 @@ func (s *Service) checkAPIKey(next http.Handler) http.Handler {
 
 func (s *Service) startHTTP(errChan chan error) {
 	p := fmt.Sprintf(":%d", s.Config.Local.HTTPPort)
-	bugLog.Local().Infof("Starting orchestrator on %s", p)
+	logs.Local().Infof("Starting orchestrator http on %s", p)
 
 	r := chi.NewRouter()
 	if !s.Config.Local.Development {
@@ -95,7 +95,7 @@ func (s *Service) startGRPC(errChan chan error) {
 		),
 	}
 	p := fmt.Sprintf(":%d", s.Config.Local.GRPCPort)
-	bugLog.Local().Infof("Starting orchestrator on %s", p)
+	logs.Local().Infof("Starting orchestrator grpc on %s", p)
 	lis, err := net.Listen("tcp", p)
 	if err != nil {
 		errChan <- err

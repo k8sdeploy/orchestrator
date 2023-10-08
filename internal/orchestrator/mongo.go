@@ -6,7 +6,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 
-	bugLog "github.com/bugfixes/go-bugfixes/logs"
+	"github.com/bugfixes/go-bugfixes/logs"
 	"github.com/k8sdeploy/orchestrator-service/internal/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -34,7 +34,7 @@ func (m *Mongo) getConnection() (*mongo.Client, error) {
 			m.Config.Mongo.Host)),
 	)
 	if err != nil {
-		return nil, err
+		return nil, logs.Errorf("failed to connect to mongo: %+v", err)
 	}
 
 	return client, nil
@@ -58,7 +58,7 @@ func (m *Mongo) GetAgentDetails(companyID, key, secret string) (*AgentData, erro
 	}
 	defer func() {
 		if err := client.Disconnect(m.CTX); err != nil {
-			bugLog.Info(err)
+			_ = logs.Error(err)
 		}
 	}()
 
@@ -73,7 +73,7 @@ func (m *Mongo) GetAgentDetails(companyID, key, secret string) (*AgentData, erro
 		}).
 		Decode(&agentData)
 	if err != nil {
-		return nil, err
+		return nil, logs.Errorf("failed to get agent details: %+v", err)
 	}
 
 	return &agentData, nil
@@ -86,7 +86,7 @@ func (m *Mongo) UpdateAgentChannel(companyID, channelID, channelKey string) erro
 	}
 	defer func() {
 		if err := client.Disconnect(m.CTX); err != nil {
-			bugLog.Info(err)
+			_ = logs.Error(err)
 		}
 	}()
 
@@ -110,7 +110,7 @@ func (m *Mongo) UpdateAgentChannel(companyID, channelID, channelKey string) erro
 			}},
 		)
 	if err != nil {
-		return err
+		return logs.Errorf("failed to update agent channel: %+v", err)
 	}
 
 	return nil

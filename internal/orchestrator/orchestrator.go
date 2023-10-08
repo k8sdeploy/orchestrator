@@ -3,8 +3,8 @@ package orchestrator
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"github.com/bugfixes/go-bugfixes/logs"
 	"net/http"
 	"strings"
 
@@ -45,7 +45,7 @@ func (o *Orchestrator) HandleNewAgent(w http.ResponseWriter, r *http.Request) {
 	var ab AgentRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&ab); err != nil {
-		fmt.Printf("failed to decode request body: %+v\n", err)
+		logs.Infof("failed to decode request body: %+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -53,12 +53,12 @@ func (o *Orchestrator) HandleNewAgent(w http.ResponseWriter, r *http.Request) {
 	if !o.Config.Development {
 		validKeys, err := o.validateAgentKeys(ab)
 		if err != nil {
-			fmt.Printf("failed to validate agent keys: %+v\n", err)
+			logs.Infof("failed to validate agent keys: %+v\n", err)
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		if !validKeys {
-			fmt.Printf("invalid agent keys: %+v\n", ab)
+			logs.Infof("invalid agent keys: %+v\n", ab)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
@@ -66,14 +66,14 @@ func (o *Orchestrator) HandleNewAgent(w http.ResponseWriter, r *http.Request) {
 
 	updateDetails, err := o.GetUpdateDetails(ab)
 	if err != nil {
-		fmt.Printf("failed to get update details: %+v\n", err)
+		logs.Infof("failed to get update details: %+v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	eventDetails, err := o.GetEventDetails(ab, updateDetails)
 	if err != nil {
-		fmt.Printf("failed to get event details: %+v\n", err)
+		logs.Infof("failed to get event details: %+v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -87,13 +87,13 @@ func (o *Orchestrator) HandleNewAgent(w http.ResponseWriter, r *http.Request) {
 		Update: updateDetails,
 		Event:  eventDetails,
 	}); err != nil {
-		fmt.Printf("failed to encode response: %+v\n", err)
+		logs.Infof("failed to encode response: %+v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Printf(" %+v\n", ab)
+	logs.Infof(" %+v\n", ab)
 }
 
 func (o *Orchestrator) validateAgentKeys(ab AgentRequest) (bool, error) {
@@ -103,12 +103,11 @@ func (o *Orchestrator) validateAgentKeys(ab AgentRequest) (bool, error) {
 
 	conn, err := grpc.Dial(o.Config.K8sDeploy.KeyService.Address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		fmt.Printf("validateKey failed to dial key service: %v", err)
-		return false, err
+		return false, logs.Errorf("failed to dial key service: %v", err)
 	}
 	defer func() {
 		if err := conn.Close(); err != nil {
-			fmt.Printf("failed to close connection: %v", err)
+			_ = logs.Errorf("failed to close connection: %v", err)
 		}
 	}()
 
@@ -122,12 +121,11 @@ func (o *Orchestrator) validateAgentKeys(ab AgentRequest) (bool, error) {
 	c := keybuf.NewKeyServiceClient(conn)
 	resp, err := c.ValidateAgentKey(context.Background(), &k)
 	if err != nil {
-		fmt.Printf("validateKey failed to validate key: %v", err)
-		return false, err
+		return false, logs.Errorf("validateKey failed to validate key: %v", err)
 	}
 
 	if resp.Status != nil {
-		return false, errors.New(*resp.Status)
+		return false, logs.Errorf("unknown status: %v", *resp.Status)
 	}
 
 	if resp.Valid {
@@ -140,21 +138,20 @@ func (o *Orchestrator) validateAgentKeys(ab AgentRequest) (bool, error) {
 func (o *Orchestrator) GetUpdateDetails(request AgentRequest) (AgentChannelDetails, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/client", o.Config.K8sDeploy.SocketAddress), nil)
 	if err != nil {
-		fmt.Printf("failed to create request: %+v\n", err)
-		return AgentChannelDetails{}, err
+		return AgentChannelDetails{}, logs.Errorf("failed to create request: %+v", err)
 	}
 
-	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", o.Config.K8sDeploy.CreateAccount))
+	//req.Header.Set("Authorization", fmt.Sprintf("Basic %s", o.Config.K8sDeploy.CreateAccount))
+	req.Header.Set("X-Gotify-Key", o.Config.K8sDeploy.CreateAccount)
 	req.Header.Set("Content-Type", "application/json")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Printf("failed to get client: %+v\n", err)
-		return AgentChannelDetails{}, err
+		return AgentChannelDetails{}, logs.Errorf("failed to get client: %+v", err)
 	}
 
 	defer func() {
 		if err := res.Body.Close(); err != nil {
-			fmt.Printf("failed to close response body: %+v\n", err)
+			_ = logs.Errorf("failed to close response body: %+v\n", err)
 		}
 	}()
 
@@ -166,8 +163,7 @@ func (o *Orchestrator) GetUpdateDetails(request AgentRequest) (AgentChannelDetai
 	var cs []client
 
 	if err := json.NewDecoder(res.Body).Decode(&cs); err != nil {
-		fmt.Printf("failed to decode response body: %+v\n", err)
-		return AgentChannelDetails{}, err
+		return AgentChannelDetails{}, logs.Errorf("failed to decode response body: %+v", err)
 	}
 
 	if len(cs) != 0 {
@@ -187,7 +183,7 @@ func (o *Orchestrator) GetUpdateDetails(request AgentRequest) (AgentChannelDetai
 func (o *Orchestrator) GetEventDetails(request AgentRequest, details AgentChannelDetails) (AgentChannelDetails, error) {
 	agent, err := NewMongo(o.Config).GetAgentDetails(request.CompanyID, request.Key, request.Secret)
 	if err != nil {
-		return AgentChannelDetails{}, err
+		return AgentChannelDetails{}, logs.Errorf("failed to get agent details: %+v", err)
 	}
 	if agent.ChannelID == "" {
 		return AgentChannelDetails{}, nil
@@ -203,19 +199,18 @@ func (o *Orchestrator) createUpdateDetails(request AgentRequest) (AgentChannelDe
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/client", o.Config.K8sDeploy.SocketAddress), strings.NewReader(
 		fmt.Sprintf(`{"name": "%s"}`, request.CompanyID)))
 	if err != nil {
-		fmt.Printf("failed to create request: %+v\n", err)
-		return AgentChannelDetails{}, err
+		return AgentChannelDetails{}, logs.Errorf("failed to create request: %+v", err)
 	}
-	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", o.Config.K8sDeploy.CreateAccount))
+	//req.Header.Set("Authorization", fmt.Sprintf("Basic %s", o.Config.K8sDeploy.CreateAccount))
+	req.Header.Set("X-Gotify-Key", o.Config.K8sDeploy.CreateAccount)
 	req.Header.Set("Content-Type", "application/json")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Printf("failed to create client: %+v\n", err)
-		return AgentChannelDetails{}, err
+		return AgentChannelDetails{}, logs.Errorf("failed to create client: %+v", err)
 	}
 	defer func() {
 		if err := res.Body.Close(); err != nil {
-			fmt.Printf("failed to close response body: %+v\n", err)
+			_ = logs.Errorf("failed to close response body: %+v\n", err)
 		}
 	}()
 	type createResponse struct {
@@ -225,8 +220,7 @@ func (o *Orchestrator) createUpdateDetails(request AgentRequest) (AgentChannelDe
 	}
 	var cr createResponse
 	if err := json.NewDecoder(res.Body).Decode(&cr); err != nil {
-		fmt.Printf("failed to decode response body: %+v\n", err)
-		return AgentChannelDetails{}, err
+		return AgentChannelDetails{}, logs.Errorf("failed to decode response body: %+v", err)
 	}
 
 	return AgentChannelDetails{
@@ -238,20 +232,20 @@ func (o *Orchestrator) createUpdateDetails(request AgentRequest) (AgentChannelDe
 func (o *Orchestrator) HandleNewAgentAccount(w http.ResponseWriter, r *http.Request) {
 	var ab AgentRequest
 	if err := json.NewDecoder(r.Body).Decode(&ab); err != nil {
-		fmt.Printf("failed to decode request body: %+v\n", err)
+		logs.Infof("failed to decode request body: %+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	if ab.CompanyID == "" || ab.Key == "" || ab.Secret == "" {
-		fmt.Printf("invalid request body: %+v\n", ab)
+		logs.Infof("invalid request body: %+v\n", ab)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	ud, err := o.createUpdateDetails(ab)
 	if err != nil {
-		fmt.Printf("failed to create update details: %+v\n", err)
+		logs.Infof("failed to create update details: %+v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -260,31 +254,29 @@ func (o *Orchestrator) HandleNewAgentAccount(w http.ResponseWriter, r *http.Requ
 		Token: ud.Token,
 	})
 	if err != nil {
-		fmt.Printf("failed to create event details: %+v\n", err)
+		logs.Infof("failed to create event details: %+v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Printf("created event details: %+v\n", acd)
+	logs.Infof("created event details: %+v\n", acd)
 }
 
 func (o *Orchestrator) createEventDetails(request AgentRequest, details AgentChannelDetails) (AgentChannelDetails, error) {
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/application", o.Config.K8sDeploy.SocketAddress), strings.NewReader(
 		fmt.Sprintf(`{"name": "%s"}`, request.CompanyID)))
 	if err != nil {
-		fmt.Printf("failed to create request: %+v\n", err)
-		return AgentChannelDetails{}, err
+		return AgentChannelDetails{}, logs.Errorf("failed to create request: %+v", err)
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", o.Config.K8sDeploy.CreateAccount))
 	req.Header.Set("Content-Type", "application/json")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Printf("failed to create application: %+v", err)
-		return AgentChannelDetails{}, err
+		return AgentChannelDetails{}, logs.Errorf("failed to create application: %+v", err)
 	}
 	defer func() {
 		if err := res.Body.Close(); err != nil {
-			fmt.Printf("failed to close response body: %+v", err)
+			_ = logs.Errorf("failed to close response body: %+v", err)
 		}
 	}()
 	type createResponse struct {
@@ -294,14 +286,12 @@ func (o *Orchestrator) createEventDetails(request AgentRequest, details AgentCha
 	}
 	var cr createResponse
 	if err := json.NewDecoder(res.Body).Decode(&cr); err != nil {
-		fmt.Printf("failed to decode response body: %+v", err)
-		return AgentChannelDetails{}, err
+		return AgentChannelDetails{}, logs.Errorf("failed to decode response body: %+v", err)
 	}
 
 	id := fmt.Sprintf("%d", cr.ID)
 	if err := NewMongo(o.Config).UpdateAgentChannel(request.CompanyID, id, cr.Token); err != nil {
-		fmt.Printf("failed to update agent channel details: %+v", err)
-		return AgentChannelDetails{}, err
+		return AgentChannelDetails{}, logs.Errorf("failed to update agent channel details: %+v", err)
 	}
 
 	return AgentChannelDetails{
