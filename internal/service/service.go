@@ -2,6 +2,9 @@ package service
 
 import (
 	"fmt"
+	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/account"
+	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/agent"
+	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/project"
 	"net"
 	"net/http"
 	"time"
@@ -63,8 +66,9 @@ func (s *Service) startHTTP(errChan chan error) {
 			r.Use(s.checkAPIKey)
 		}
 
-		r.Post("/agent", orchestrator.NewOrchestrator(s.Config).HandleNewAgent)
-		r.Post("/agent_account", orchestrator.NewOrchestrator(s.Config).HandleNewAgentAccount)
+		r.Mount("/account", account.NewAccount(s.Config).Router())
+		r.Mount("/agent", agent.NewAgent(s.Config).Router())
+		r.Mount("/project", project.NewProject(s.Config).Router())
 	})
 
 	srv := &http.Server{
