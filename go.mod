@@ -11,21 +11,19 @@ require (
 	github.com/go-chi/httplog v0.3.1
 	github.com/go-kit/log v0.2.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/hashicorp/vault/api v1.10.0
 	github.com/k8sdeploy/protos v0.1.16
 	github.com/keloran/go-config v0.3.0
 	github.com/keloran/go-healthcheck v1.2.1
 	github.com/keloran/go-probe v1.0.0
 	github.com/keloran/vault-helper v0.8.0
 	go.mongodb.org/mongo-driver v1.12.1
-	google.golang.org/grpc v1.58.0
+	google.golang.org/grpc v1.58.2
 )
 
 require (
 	github.com/caarlos0/env/v8 v8.0.0 // indirect
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.0 // indirect
-	github.com/go-kit/kit v0.13.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-ping/ping v1.1.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
@@ -34,6 +32,7 @@ require (
 	github.com/gotify/go-api-client/v2 v2.0.4 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
+	github.com/hashicorp/go-hclog v1.2.2 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.4 // indirect
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
@@ -42,14 +41,13 @@ require (
 	github.com/hashicorp/go-sockaddr v1.0.5 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/k8sdeploy/protobufs v0.0.0-20230908210412-a77199120431 // indirect
+	github.com/hashicorp/vault/api v1.10.0 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
-	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rs/zerolog v1.30.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
@@ -62,8 +60,6 @@ require (
 	golang.org/x/sys v0.12.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
-	google.golang.org/genproto v0.0.0-20230803162519-f966b187b2e5 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
-	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 )
