@@ -2,11 +2,14 @@ package service
 
 import (
 	"fmt"
+	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/account"
+	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/agent"
+	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/project"
 	"net"
 	"net/http"
 	"time"
 
-	bugLog "github.com/bugfixes/go-bugfixes/logs"
+	"github.com/bugfixes/go-bugfixes/logs"
 	bugMiddleware "github.com/bugfixes/go-bugfixes/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -44,7 +47,7 @@ func (s *Service) checkAPIKey(next http.Handler) http.Handler {
 
 func (s *Service) startHTTP(errChan chan error) {
 	p := fmt.Sprintf(":%d", s.Config.Local.HTTPPort)
-	bugLog.Local().Infof("Starting orchestrator on %s", p)
+	logs.Local().Infof("Starting orchestrator http on %s", p)
 
 	r := chi.NewRouter()
 	if !s.Config.Local.Development {
@@ -63,8 +66,9 @@ func (s *Service) startHTTP(errChan chan error) {
 			r.Use(s.checkAPIKey)
 		}
 
-		r.Post("/agent", orchestrator.NewOrchestrator(s.Config).HandleNewAgent)
-		r.Post("/agent_account", orchestrator.NewOrchestrator(s.Config).HandleNewAgentAccount)
+		r.Mount("/account", account.NewAccount(s.Config).Router())
+		r.Mount("/agent", agent.NewAgent(s.Config).Router())
+		r.Mount("/project", project.NewProject(s.Config).Router())
 	})
 
 	srv := &http.Server{
@@ -95,7 +99,7 @@ func (s *Service) startGRPC(errChan chan error) {
 		),
 	}
 	p := fmt.Sprintf(":%d", s.Config.Local.GRPCPort)
-	bugLog.Local().Infof("Starting orchestrator on %s", p)
+	logs.Local().Infof("Starting orchestrator grpc on %s", p)
 	lis, err := net.Listen("tcp", p)
 	if err != nil {
 		errChan <- err
