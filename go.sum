@@ -98,8 +98,8 @@ github.com/keloran/go-healthcheck v1.2.1 h1:BmqjL0HOsIY5YYm74l28gpds1lzhR/tlEVBN
 github.com/keloran/go-healthcheck v1.2.1/go.mod h1:Cwa0dsTKUH7r4JgiF5Ho4pWDgvYat3nSm8owc0cyRAw=
 github.com/keloran/go-probe v1.0.0 h1:OAO7f71lRJIz+rF7iGAeBj4i86NaUazL8DaVf9dVJGU=
 github.com/keloran/go-probe v1.0.0/go.mod h1:S+6U1pcDDDDgyKkdgw9phD1obn1uHbAn4ESUzATRweQ=
-github.com/keloran/vault-helper v0.8.1 h1:mRVAfpzNTUFHNU+em9EMQWU95hsnoAVYBxVIgChdlJs=
-github.com/keloran/vault-helper v0.8.1/go.mod h1:JZ/puuBd4+dWYZOeVEA7SgzbQS2VyYJibWte6q1h8Mk=
+github.com/keloran/vault-helper v0.8.2 h1:Nmsb3XAhuaLQRv+LirOTSjdv6WcJuqNK+7xnOLAa+ME=
+github.com/keloran/vault-helper v0.8.2/go.mod h1:JZ/puuBd4+dWYZOeVEA7SgzbQS2VyYJibWte6q1h8Mk=
 github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI2bnpBCr8=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/klauspost/compress v1.13.6/go.mod h1:/3/Vjq9QcHkK5uEr5lBEmyoZ1iFhe47etQ6QUkpK6sk=
