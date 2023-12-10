@@ -10,11 +10,11 @@ require (
 	github.com/go-kit/log v0.2.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/k8sdeploy/protos v0.1.16
-	github.com/keloran/go-config v0.4.0
+	github.com/keloran/go-config v0.4.1
 	github.com/keloran/go-healthcheck v1.2.1
 	github.com/keloran/go-probe v1.0.0
-	github.com/keloran/vault-helper v0.8.1
-	go.mongodb.org/mongo-driver v1.13.0
+	github.com/keloran/vault-helper v0.8.2
+	go.mongodb.org/mongo-driver v1.13.1
 	google.golang.org/grpc v1.59.0
 )
 
@@ -38,7 +38,7 @@ require (
 	github.com/hashicorp/go-sockaddr v1.0.6 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/vault/api v1.10.0 // indirect
-	github.com/klauspost/compress v1.17.3 // indirect
+	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
