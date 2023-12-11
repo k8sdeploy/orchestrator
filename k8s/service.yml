@@ -25,7 +25,7 @@ spec:
         - name: regcred
       containers:
         - name: orchestrator
-          image: containers.chewedfeed.com/k8sdeploy/orchestrator:latest
+          image: containers.chewed-k8s.net/k8sdeploy/orchestrator:latest
           imagePullPolicy: Always
           readinessProbe:
             httpGet:
