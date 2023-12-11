@@ -52,7 +52,7 @@ func (s *Server) Deploy(ctx context.Context, in *pb.DeploymentRequest) (*pb.Depl
 	if in.K8SDetails.ImageTag != "" {
 		imageVersion = in.K8SDetails.ImageTag
 	}
-	imageURL := fmt.Sprintf("%s/%s:%s", "containers.chewedfeed.com/k8sdeploy", in.K8SDetails.ServiceName, imageVersion)
+	imageURL := fmt.Sprintf("%s/%s:%s", "containers.chewed-k8s.net/k8sdeploy", in.K8SDetails.ServiceName, imageVersion)
 
 	deployMessage := DeployMessage{
 		Namespace: in.K8SDetails.ServiceNamespace,
