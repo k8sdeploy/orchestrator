@@ -92,8 +92,8 @@ github.com/hashicorp/vault/api v1.10.0 h1:/US7sIjWN6Imp4o/Rj1Ce2Nr5bki/AXi9vAW3p
 github.com/hashicorp/vault/api v1.10.0/go.mod h1:jo5Y/ET+hNyz+JnKDt8XLAdKs+AM0G5W0Vp1IrFI8N8=
 github.com/k8sdeploy/protos v0.1.16 h1:wBlbleYBNUYDPPo6HLxw5Gb6ZrTaD9lsksgQyTTUdVI=
 github.com/k8sdeploy/protos v0.1.16/go.mod h1:LPR4MQqBAgOpywLfSCHlnEpuD5JqXIjhJrJ4U1cDKAs=
-github.com/keloran/go-config v0.4.1 h1:0RCkxK9dnoseRbaXdVu/9EuIAj4wfDMj8Lv3C9ZooCg=
-github.com/keloran/go-config v0.4.1/go.mod h1:133jjY4NNjIO4Loo6M/zQLmtLh5a2xp28E4MyaypXV8=
+github.com/keloran/go-config v0.4.2 h1:ufkRbvg/0ft62tjFnA8lUQCyNnVleoGd8SwmRb5EPC4=
+github.com/keloran/go-config v0.4.2/go.mod h1:KxS15MfqGbUw01Um/GJbnOM46oeEB8pQAKDRYJMunM4=
 github.com/keloran/go-healthcheck v1.2.1 h1:BmqjL0HOsIY5YYm74l28gpds1lzhR/tlEVBN4YoiWR4=
 github.com/keloran/go-healthcheck v1.2.1/go.mod h1:Cwa0dsTKUH7r4JgiF5Ho4pWDgvYat3nSm8owc0cyRAw=
 github.com/keloran/go-probe v1.0.0 h1:OAO7f71lRJIz+rF7iGAeBj4i86NaUazL8DaVf9dVJGU=
