@@ -10,7 +10,7 @@ require (
 	github.com/go-kit/log v0.2.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/k8sdeploy/protos v0.1.16
-	github.com/keloran/go-config v0.4.3
+	github.com/keloran/go-config v0.4.4
 	github.com/keloran/go-healthcheck v1.2.1
 	github.com/keloran/go-probe v1.0.0
 	github.com/keloran/vault-helper v0.8.2
