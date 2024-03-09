@@ -1,6 +1,7 @@
 module github.com/k8sdeploy/orchestrator-service
 
-go 1.21
+go 1.22
+
 toolchain go1.22.1
 
 require (
