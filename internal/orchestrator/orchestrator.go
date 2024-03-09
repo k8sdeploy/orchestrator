@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/bugfixes/go-bugfixes/logs"
 	"net/http"
 	"strings"
+
+	"github.com/bugfixes/go-bugfixes/logs"
 
 	keybuf "github.com/k8sdeploy/protos/generated/key/v1"
 	"google.golang.org/grpc"
