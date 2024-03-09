@@ -1,9 +1,10 @@
 package account
 
 import (
+	"net/http"
+
 	chi "github.com/go-chi/chi/v5"
 	"github.com/k8sdeploy/orchestrator-service/internal/config"
-	"net/http"
 )
 
 type Account struct {

@@ -2,12 +2,13 @@ package service
 
 import (
 	"fmt"
-	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/account"
-	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/agent"
-	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/project"
 	"net"
 	"net/http"
 	"time"
+
+	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/account"
+	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/agent"
+	"github.com/k8sdeploy/orchestrator-service/internal/orchestrator/project"
 
 	"github.com/bugfixes/go-bugfixes/logs"
 	bugMiddleware "github.com/bugfixes/go-bugfixes/middleware"

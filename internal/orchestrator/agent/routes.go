@@ -1,8 +1,9 @@
 package agent
 
 import (
-	"github.com/k8sdeploy/orchestrator-service/internal/config"
 	"net/http"
+
+	"github.com/k8sdeploy/orchestrator-service/internal/config"
 )
 
 type Agent struct {
