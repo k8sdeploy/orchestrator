@@ -1,6 +1,8 @@
 module github.com/k8sdeploy/orchestrator-service
 
-go 1.21
+go 1.22
+
+toolchain go1.22.1
 
 require (
 	github.com/bugfixes/go-bugfixes v0.10.0
@@ -11,7 +13,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/k8sdeploy/protos v0.1.16
 	github.com/keloran/go-config v0.5.1
-	github.com/keloran/go-healthcheck v1.2.1
+	github.com/keloran/go-healthcheck v1.2.2
 	github.com/keloran/go-probe v1.0.0
 	github.com/keloran/vault-helper v0.8.2
 	go.mongodb.org/mongo-driver v1.14.0
