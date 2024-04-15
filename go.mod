@@ -16,7 +16,7 @@ require (
 	github.com/keloran/go-healthcheck v1.2.2
 	github.com/keloran/go-probe v1.0.0
 	github.com/keloran/vault-helper v0.8.2
-	go.mongodb.org/mongo-driver v1.14.0
+	go.mongodb.org/mongo-driver v1.15.0
 	google.golang.org/grpc v1.63.2
 )
 
