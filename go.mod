@@ -5,7 +5,7 @@ go 1.22
 toolchain go1.22.1
 
 require (
-	github.com/bugfixes/go-bugfixes v0.12.4
+	github.com/bugfixes/go-bugfixes v0.12.6
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/go-chi/httplog v0.3.2
@@ -15,7 +15,7 @@ require (
 	github.com/keloran/go-config v0.5.4
 	github.com/keloran/go-healthcheck v1.2.2
 	github.com/keloran/go-probe v1.0.0
-	github.com/keloran/vault-helper v0.9.0
+	github.com/keloran/vault-helper v0.9.1
 	go.mongodb.org/mongo-driver v1.15.0
 	google.golang.org/grpc v1.64.0
 )
