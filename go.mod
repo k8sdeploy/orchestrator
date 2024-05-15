@@ -5,7 +5,7 @@ go 1.22
 toolchain go1.22.1
 
 require (
-	github.com/bugfixes/go-bugfixes v0.12.6
+	github.com/bugfixes/go-bugfixes v0.12.16
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/go-chi/httplog v0.3.2
