@@ -7,7 +7,7 @@ toolchain go1.22.1
 require (
 	github.com/bugfixes/go-bugfixes v0.12.6
 	github.com/caarlos0/env/v6 v6.10.1
-	github.com/go-chi/chi/v5 v5.0.14
+	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-chi/httplog v0.3.2
 	github.com/go-kit/log v0.2.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
