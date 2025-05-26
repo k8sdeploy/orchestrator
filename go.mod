@@ -15,7 +15,7 @@ require (
 	github.com/keloran/go-probe v1.0.0
 	github.com/keloran/vault-helper v0.9.1
 	go.mongodb.org/mongo-driver v1.17.3
-	google.golang.org/grpc v1.72.1
+	google.golang.org/grpc v1.72.2
 )
 
 require (
