@@ -3,7 +3,7 @@ module github.com/k8sdeploy/orchestrator-service
 go 1.23.0
 
 require (
-	github.com/bugfixes/go-bugfixes v0.12.6
+	github.com/bugfixes/go-bugfixes v0.14.0
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/go-chi/httplog v0.3.2
