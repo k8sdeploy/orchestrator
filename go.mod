@@ -3,7 +3,7 @@ module github.com/k8sdeploy/orchestrator-service
 go 1.24.0
 
 require (
-	github.com/bugfixes/go-bugfixes v0.12.6
+	github.com/bugfixes/go-bugfixes v0.14.1
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/go-chi/httplog v0.3.2
@@ -23,7 +23,7 @@ require (
 	github.com/caarlos0/env/v8 v8.0.0 // indirect
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
-	github.com/go-logfmt/logfmt v0.6.0 // indirect
+	github.com/go-logfmt/logfmt v0.6.1 // indirect
 	github.com/go-ping/ping v1.1.0 // indirect
 	github.com/go-resty/resty/v2 v2.7.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
